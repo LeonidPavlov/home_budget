@@ -1,8 +1,7 @@
 from genericpath import isdir, isfile
 import os
-import shutil
-import sys
 import sqlite3
+
 
 class Storage:
 
@@ -19,11 +18,32 @@ class Storage:
             return False
 
     def create_database_file(self) -> bool:
-        if not isfile(self.file_name):
-            file = sqlite3.connect(self.file_name)
-            file.close()
-            return True
-        else:
-            return False
+        truth: bool = False
+        try:    
+            if not isfile(self.file_name):
+                file = sqlite3.connect(self.file_name)
+                file.execute(self.create_tables_query())
+                file.close()
+                truth = True
+            else:
+                truth = False
+        except sqlite3.OperationalError as err:
+            print('SQLITE ERROR')
+        return truth
 
+    def create_tables_query(self) -> str:
+        query: str = """
+                        create table if not exists source_docs
+                        (
+                            id integer primary key,
+                            date text,
+                            entry_type text,
+                            bill_name text,
+                            product text,
+                            cost real,
+                            amount real,
+                            total real
+                        );
+        """
+        return query
 
