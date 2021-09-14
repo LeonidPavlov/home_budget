@@ -1,7 +1,9 @@
 from PyQt5.QtWidgets import QApplication
 
 from src.storage.storage import Storage
-from src.view.main_window import MainWindow
+from src.view.main_view import MainView
+from src.view.main import App
+
 
 storage: Storage = Storage('databases', 'database.db')
 try:
@@ -11,6 +13,6 @@ try:
 except Exception as err:
     print(err)
 
-app: MainWindow = MainWindow(storage)
-
+# app: MainView = MainView(storage)
+App()
 
