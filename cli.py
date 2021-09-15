@@ -1,7 +1,6 @@
 from PyQt5.QtWidgets import QApplication
 
 from src.storage.storage import Storage
-from src.view.main_view import MainView
 from src.view.main import App
 
 

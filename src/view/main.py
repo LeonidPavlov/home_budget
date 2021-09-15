@@ -19,7 +19,7 @@ class Main(QMainWindow):
         self.setWindowTitle('Home Budget')
         self.setGeometry(320, 180 ,1024 ,576)
 
-        central_widget = WidgetInCenter()
+        central_widget = WidgetInCenter(self)
         MenuWidgets(self, central_widget)
 
 class App:

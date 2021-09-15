@@ -1,0 +1,7 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+    <file alias="file.ico">file.ico</file>
+    <file alias="entry.ico">entry.ico</file>
+    <file alias="help.ico">help.ico</file>
+</qresource>
+</RCC>

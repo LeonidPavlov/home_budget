@@ -12,6 +12,8 @@ $pip pytest
 
 venv/bin/python -m pytest
 
+venv/bin/pyrcc5 -o resources/qrc_resources.py resources/.qrc
+
 rm -f dist/cli
 
 venv/bin/pyinstaller cli.py --onefile
