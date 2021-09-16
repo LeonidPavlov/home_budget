@@ -7,7 +7,7 @@ import PyQt5.QtCore as QtCore
 
 from src.storage.storage import Storage
 from src.view.central_widget import WidgetInCenter
-from src.view.menus_widgets import MenuWidgets
+from src.view.menu.menu_bar import MenuBar
 
 
 class Main(QMainWindow):
@@ -20,7 +20,7 @@ class Main(QMainWindow):
         self.setGeometry(320, 180 ,1024 ,576)
 
         central_widget = WidgetInCenter(self)
-        MenuWidgets(self, central_widget)
+        MenuBar(self, central_widget)
 
 class App:
     def __init__(self) -> None:
