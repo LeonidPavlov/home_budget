@@ -12,6 +12,5 @@ try:
 except Exception as err:
     print(err)
 
-# app: MainView = MainView(storage)
 App()
 

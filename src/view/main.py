@@ -11,6 +11,7 @@ from src.view.menu.menu_bar import MenuBar
 
 
 class Main(QMainWindow):
+
     def __init__(self, parent:  typing.Optional[QWidget] = None) -> None:
         super().__init__(parent=parent)
         self._add_parameters()
@@ -19,8 +20,8 @@ class Main(QMainWindow):
         self.setWindowTitle('Home Budget')
         self.setGeometry(320, 180 ,1024 ,576)
 
-        central_widget = WidgetInCenter(self)
-        MenuBar(self, central_widget)
+        self._central_widget = WidgetInCenter(self)
+        MenuBar(self, self._central_widget)
 
 class App:
     def __init__(self) -> None:

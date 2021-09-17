@@ -9,3 +9,6 @@ class WidgetInCenter:
         self.label: QLabel = QLabel('<h1>EBAT COLOTIT</h1>')
         parent.setCentralWidget(self.label)
         self.label.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+    
+    def set_text(self, text: str = 'default') -> None:
+        self.label.setText(text) 

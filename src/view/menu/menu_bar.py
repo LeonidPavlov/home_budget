@@ -18,7 +18,7 @@ class MenuBar:
         self._place_menu_bar()
         self._add_menu()
         EntryMenu(self._parent, self._menus[MenuBar._menu_names[0]], 
-                    MenuBar._menu_names[0])
+                    MenuBar._menu_names[0], central_widget)
 
     def _place_menu_bar(self) -> None:
         self._menu_bar = QMenuBar(self._parent)
