@@ -12,5 +12,7 @@ try:
 except Exception as err:
     print(err)
 
-App()
-
+try:
+    App()
+except RuntimeError as err:
+    print(err)

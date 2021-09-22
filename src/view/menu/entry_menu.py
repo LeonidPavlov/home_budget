@@ -1,10 +1,9 @@
 from typing import List, Dict
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QAction, QMainWindow, QMenu, QToolBar
+from PyQt5.QtCore import QEvent, Qt
+from PyQt5.QtWidgets import QAction, QLabel, QMainWindow, QMenu, QToolBar
 
 from resources import qrc_resources
 from src.view.menu.synced_actions import SyncedActions
-from src.view.central_widget import WidgetInCenter
               
 
 class EntryMenu:
@@ -14,16 +13,12 @@ class EntryMenu:
         [':entry', ':edit', ':search'], 
         ['Ctrl+N', 'Ctrl+E', 'Ctrl+A']
     ]
-    @staticmethod
-    def huy_tebe() -> None:
-        print('huy tebe')
 
-    def __init__(self, parent: QMainWindow, menu: QMenu,
-                        menu_name: str, central_widget: WidgetInCenter) -> None:
+    def __init__(self,  parent: QMainWindow, menu: QMenu,\
+                        menu_name: str) -> None:
         self._parent: QMainWindow = parent
         self._menu: QMenu = menu
         self._menu_name = menu_name
-        self._create_widget = central_widget
         self._create_actions()
 
     def _create_actions(self) -> None:
@@ -37,8 +32,15 @@ class EntryMenu:
         self._toolbar.setHidden(True)
         self._toolbar.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
         self._parent.addToolBar(Qt.TopToolBarArea, self._toolbar)
-        self._actions[0].triggered.connect(self._entry_action_precced)
+        
+        entryActions: EntryActions = EntryActions(self._parent)
+        self._actions[0].triggered.connect(entryActions.mousePressEvent)
+
+
+class EntryActions:
+    def __init__(self, parent: QMainWindow) -> None:
+        EntryActions.__parent: QMainWindow = parent
 
     @staticmethod
-    def _entry_action_precced() -> None:
-        print('ebat colotit')
+    def mousePressEvent(event: QEvent) -> None:
+        EntryActions.__parent.changeCentralWidget(QLabel('<h2>ebanaftumba</h2>'))

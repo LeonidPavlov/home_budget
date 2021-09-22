@@ -1,12 +1,8 @@
-from PyQt5.QtWidgets import QApplication, QMainWindow, QMenuBar,\
-                            QToolBar, QWidget, QLabel, QMenu
-from PyQt5.QtCore import Qt, left
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QLabel
+from PyQt5.QtCore import Qt
 import sys
 import typing
-import PyQt5.QtCore as QtCore
 
-from src.storage.storage import Storage
-from src.view.central_widget import WidgetInCenter
 from src.view.menu.menu_bar import MenuBar
 
 
@@ -14,14 +10,17 @@ class Main(QMainWindow):
 
     def __init__(self, parent:  typing.Optional[QWidget] = None) -> None:
         super().__init__(parent=parent)
-        self._add_parameters()
+        self.__create_view()
 
-    def _add_parameters(self) -> None:
+    def __create_view(self) -> None:
         self.setWindowTitle('Home Budget')
         self.setGeometry(320, 180 ,1024 ,576)
+        self.changeCentralWidget(QLabel('<h1>Default Text</h1>'))
+        MenuBar(self)
 
-        self._central_widget = WidgetInCenter(self)
-        MenuBar(self, self._central_widget)
+    def changeCentralWidget(self, widget: QWidget) -> None:
+        self.setCentralWidget(widget)
+        widget.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
 
 class App:
     def __init__(self) -> None:
