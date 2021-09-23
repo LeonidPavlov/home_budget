@@ -2,7 +2,7 @@ from typing import List, Dict
 from PyQt5.QtCore import QEvent, Qt
 from PyQt5.QtWidgets import QAction, QLabel, QMainWindow, QMenu, QToolBar
 
-from resources import qrc_resources
+from qrc import qrc_resources
 from src.view.menu.synced_actions import SyncedActions
               
 

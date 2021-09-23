@@ -1,8 +1,0 @@
-<!DOCTYPE RCC><RCC version="1.0">
-<qresource>
-    <file alias="entry">entry.png</file>
-    <file alias="edit">edit.png</file>
-    <file alias="search">search.png</file>
-
-</qresource>
-</RCC>
