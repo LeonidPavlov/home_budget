@@ -18,7 +18,7 @@ def test_create_table_query() -> None:
     assert(storage.create_tables_query() == """
                         create table if not exists source_docs
                         (
-                            id integer primary key,
+                            entry_id integer primary key,
                             date text,
                             entry_type text,
                             bill_name text,

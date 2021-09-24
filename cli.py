@@ -1,10 +1,12 @@
+import sys
 from PyQt5.QtWidgets import QApplication
 
 from src.storage.storage import Storage
-from src.view.main import App
+from src.view.main_window import MainWindow
+from src.storage.crud import Crud
 
 
-storage: Storage = Storage('databases', 'database.db')
+storage: Storage = Storage()
 try:
     if storage.create_directory():
         if storage.create_database_file():
@@ -13,6 +15,10 @@ except Exception as err:
     print(err)
 
 try:
-    App()
+    app: QApplication = QApplication([])
+    mv: MainWindow = MainWindow()
+    Crud(mv, storage)
+    mv.show()
+    sys.exit(app.exec())
 except RuntimeError as err:
     print(err)
