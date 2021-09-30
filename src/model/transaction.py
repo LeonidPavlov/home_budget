@@ -10,7 +10,8 @@ class EntryType(Enum):
 
 
 class AccountingEntry:
-    def __init__(self,  date_time: datetime = datetime.now(),
+    def __init__(self,  entry_id: int = 0,
+                        date_time: datetime = datetime.now(),
                         entry_type: EntryType = EntryType.debet_debet,
                         bill_name: str = 'others',
                         source_leak_name: str = 'unknown',

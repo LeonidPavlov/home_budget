@@ -1,16 +1,18 @@
-from PyQt5.QtWidgets import QLabel, QVBoxLayout, QWidget
-from typing import Optional
+from functools import partial
+from PyQt5.QtGui import QKeySequence
+from PyQt5.QtWidgets import QAction, QFormLayout, QLabel, QMainWindow, QWidget
+
+from src.model.transaction import AccountingEntry
 
 
-class EntryView(QWidget):
-    def __init__(self) -> None:
-        super().__init__()
-        label = QLabel("EBAT NI EBATSA")
-        self._layout = QVBoxLayout()
-        self._layout.addWidget(label)
-        self.setLayout(self._layout)
-        print('constructor')
-        
-    def instance(self) -> QWidget:
-        print('instance')
-        return self
+class EntryView:
+    def __init__(self,  parent: QMainWindow, entry: AccountingEntry) -> None:
+        self.widget : QWidget = QWidget(parent)
+        self.parent: QMainWindow = parent
+        self.layout: QFormLayout  = QFormLayout()
+        self._init_fields()
+        self.widget.setLayout(self.layout)       
+        self.parent.setCentralWidget(self.widget)
+
+    def _init_fields(self) -> None:
+        pass
