@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QApplication, QMainWindow
 
 from src.storage.storage import Storage
 from src.view.main_window import MainWindow
@@ -16,8 +16,8 @@ except Exception as err:
 
 try:
     app: QApplication = QApplication([])
-    mv: MainWindow = MainWindow()
-    Crud(mv, storage)
+    crud: Crud = Crud(storage)
+    mv: MainWindow = MainWindow(crud=crud)
     mv.show()
     sys.exit(app.exec())
 except RuntimeError as err:
