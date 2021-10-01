@@ -1,6 +1,7 @@
 from functools import partial
 from PyQt5.QtGui import QKeySequence
 from PyQt5.QtWidgets import QAction, QFormLayout, QLabel, QMainWindow, QWidget
+from src.view.alert import Achtung
 
 from src.model.transaction import AccountingEntry
 

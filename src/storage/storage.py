@@ -4,6 +4,8 @@ from genericpath import isdir, isfile
 from sqlite3 import Connection, connect
 from enum import Enum
 
+from src.view.alert import Achtung, AchtungType
+
 
 class DatabaseAndColumnsName(Enum):
     table_name = 'source_docs'
@@ -24,11 +26,15 @@ class Storage:
         self.file_name = database_direcory_name + '/' + database_file_name
         
     def create_directory(self) -> bool:
-        if not isdir(self.database_directory_name):
-            os.mkdir(self.database_directory_name)
-            return True
-        else:
-            return False
+        try:
+            if not isdir(self.database_directory_name):
+                os.mkdir(self.database_directory_name)
+                return True
+            else:
+                return False
+        except (FileExistsError) as err:
+            Achtung(None, err.__str__(), AchtungType.error, 
+                    'create directory method', __file__)
 
     def create_database_file(self) -> bool:
         truth: bool = False
@@ -41,7 +47,8 @@ class Storage:
             else:
                 truth = False
         except sqlite3.Error as err:
-            print(err)
+            Achtung(None, err.__str__(), AchtungType.error, 
+                    'create database file method', __file__)
         return truth
 
     def create_tables_query(self) -> str:
@@ -63,10 +70,21 @@ class Storage:
 
 
     def connect_with_db(self) -> Connection:
-        return connect(self.file_name)
-    
+        try:
+            conn = connect(self.file_name)
+            return conn
+        except sqlite3.Error as err:
+            Achtung(None, err.__str__(), AchtungType.error, 
+                    'connect_with_db method', __file__)
+
+
     def execute_query(self, conn: Connection, query: str = '') -> None:
-        conn.execute(query)
+        try:
+            conn.execute(query)
+        except sqlite3.Error as err:
+            Achtung(None, err.__str__(), AchtungType.error, 
+                    'execute_querry method', __file__)
+
     
     def close_connection(self, conn: Connection) -> None:
         conn.close()
