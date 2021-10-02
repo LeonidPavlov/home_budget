@@ -15,8 +15,9 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.crud: Crud = crud
         self.setCentralWidget(QLabel('<h1>PLACEHOLDER</h1>'))
-        self.setMinimumSize(640, 360)
+        # self.setMinimumSize(640, 360)
         self._add_menu_bar()
+        self.set_dev_style()
 
     def _add_menu_bar(self) -> None:
         menu_bar: QMenuBar = QMenuBar(self)
@@ -36,8 +37,17 @@ class MainWindow(QMainWindow):
         self.entry_menu.addAction(new_action)
          
         self.addToolBar(Qt.LeftToolBarArea, toolbar)
-        toolbar.setVisible(False)
+        # toolbar.setVisible(False)
         toolbar.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
     
     def _setup_entry_widget(self, entry: AccountingEntry) -> None:
-        EntryView(self, entry)
+        EntryView(self, entry, self.crud)
+    
+    def set_dev_style(self) -> None:
+        self.setStyleSheet('''
+            background-color: bisque;
+            color: navy;
+            border-color: navy;
+            font-size: 14px;
+            font-weight: 900;
+        ''')

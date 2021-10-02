@@ -2,10 +2,10 @@ from enum import Enum
 from datetime import datetime
 
 class EntryType(Enum):
-    debet_credit_plus = 'debet+ <-> credit+'
-    debet_credit_minus = 'debet- <-> credit-'
-    debet_debet = 'debet- <-> debet+'
-    credit_credit = 'credit- <-> credit+'
+    debet_credit_plus = '+ debet <-> + credit'
+    debet_credit_minus = '- debet <-> - credit'
+    debet_debet = '- debet <-> + debet'
+    credit_credit = '- credit <-> + credit'
 
 
 
@@ -20,6 +20,7 @@ class AccountingEntry:
                         amount: float = 1.0,
                         total: float = 1.0
                         ) -> None:
+        self.entry_id = entry_id
         self.date_time = date_time
         self.entry_type = entry_type
         self.bill_name = bill_name
