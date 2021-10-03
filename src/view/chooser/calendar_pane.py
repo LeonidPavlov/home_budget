@@ -1,14 +1,11 @@
-import sys
-from typing import Type
-from PyQt5.QtGui import QKeyEvent, QKeySequence
-from PyQt5.QtWidgets import QLabel, QPushButton, QTimeEdit, QVBoxLayout,\
+from PyQt5.QtGui import QKeyEvent
+from PyQt5.QtWidgets import QDialog, QLabel, QPushButton, QTimeEdit, QVBoxLayout,\
                             QWidget, QCalendarWidget, QHBoxLayout
-from PyQt5.QtCore import QTime, QTimer, Qt
+from PyQt5.QtCore import QDate, QTime, QTimer, Qt, QDateTime
 from datetime import datetime as dt
-from PyQt5 import QtGui
 
 
-class CalendarPane(QWidget):
+class CalendarPane(QDialog):
     """
         it is a popup view to choose date and time and return 
         value back
@@ -19,14 +16,14 @@ class CalendarPane(QWidget):
         - confirmation buttons
     """
 
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self, parent: QWidget, entry_view: object) -> None:
+        super().__init__(parent = parent)
+        self.__entry_view = entry_view
         self.__set_root_layout()
         self.__set_label_with_date_and_going_clock()
         self.__set_calendar_view()
         self.__set_time_editor()
         self.__set_navigation()
-        self.__set_close_on_escape()
         self.setLayout(self.__main_vbox)
         self.show()
 
@@ -81,13 +78,14 @@ class CalendarPane(QWidget):
     
     def __result(self) -> None:
         """temporary only prints values """
-        print(str(self.__time_editor.time()))
-        print(str(self.__calendar.selectedDate()))
+        date: QDate = self.__calendar.selectedDate()
+        time: QTime = self.__time_editor.time()
+        datetime: QDateTime = QDateTime()
+        datetime.setDate(date)
+        datetime.setTime(time)
+        self.__entry_view.set_date_time_from_entry(datetime)  
         self.close()
 
-    def __set_close_on_escape(self) -> None:
-        pass
-
-    def keyPressEvent(self, event1: QtGui.QKeyEvent) -> None:
+    def keyPressEvent(self, event1: QKeyEvent) -> None:
         if event1.key() == Qt.Key_Escape:
             self.close()

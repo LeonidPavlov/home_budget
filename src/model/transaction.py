@@ -1,5 +1,6 @@
+from datetime import date
 from enum import Enum
-from datetime import datetime
+from PyQt5.QtCore import QDateTime
 
 class EntryType(Enum):
     debet_credit_plus = '+ debet <-> + credit'
@@ -11,7 +12,7 @@ class EntryType(Enum):
 
 class AccountingEntry:
     def __init__(self,  entry_id: int = 0,
-                        date_time: datetime = datetime.now(),
+                        date_time: QDateTime = QDateTime().currentDateTime(),
                         entry_type: EntryType = EntryType.debet_debet,
                         bill_name: str = 'others',
                         source_leak_name: str = 'unknown',

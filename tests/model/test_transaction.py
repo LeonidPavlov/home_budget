@@ -21,7 +21,7 @@ def test_AccountingEntry_init() -> None:
     assert(ae != None)
 
 def test_date_time() -> None:
-    assert(ae.date_time.month == dt.now().month)
+    assert(ae.date_time.date().month()) == dt.now().month
 
 def test_entry_type() -> None:
     assert(ae.entry_type == EntryType.debet_debet)
