@@ -1,10 +1,11 @@
 import functools
-from PyQt5.QtGui import QMouseEvent
+from PyQt5.QtGui import QDoubleValidator, QMouseEvent, QValidator
 from typing import Dict, List
 from PyQt5.QtCore import QDateTime, Qt
-from PyQt5.QtWidgets import QComboBox, QFormLayout, QHBoxLayout, QLabel,\
-            QMainWindow, QPushButton, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import QComboBox, QFormLayout, QHBoxLayout, QLabel, QLineEdit,\
+            QMainWindow, QPushButton, QTextEdit, QVBoxLayout, QWidget
 
+from src.view.alert import Achtung, AchtungType
 from src.view.chooser.calendar_pane import CalendarPane
 from src.storage.crud import Crud
 from src.model.transaction import AccountingEntry, EntryType
@@ -36,6 +37,14 @@ class Row:
         self.layout.addRow(self.label, box)
         self.layout.setAlignment(box, Qt.AlignRight)
         return box
+    
+    def label_editor(self) -> QLineEdit:
+        edit: QLineEdit = QLineEdit(self.content[0])
+        edit.setFixedWidth(self.width)
+        edit.setClearButtonEnabled(True)
+        self.layout.addRow(self.label, edit)
+        self.layout.setAlignment(edit, Qt.AlignRight)
+        return edit
 
 class EntryView:
 
@@ -70,33 +79,42 @@ class EntryView:
                                 EntryType.credit_credit.value,
                                 EntryType.debet_credit_plus.value,
                                 EntryType.debet_credit_minus.value]
-        entry_type_combo: QComboBox = Row('entry type : ', 
+        self.entry_type_combo: QComboBox = Row('entry type : ', 
                             items, self.widget, self.form_layout).\
                             label_combo()
 
         items = [] # to database
-        bill_name_combo: QComboBox = Row('bill name : ', items, self.widget,
+        self.bill_name_combo: QComboBox = Row('bill name : ', items, self.widget,
                         self.form_layout, editable=True).label_combo()
         
-        items = [] # to database
-        source_leak_name_combo: QComboBox = Row('soource or leak name', items, 
-                    self.widget, self.form_layout, editable=True).label_combo()
 
         items = [] # to database
-        product_combo: QComboBox = Row('product : ', items, self.widget, 
+        self.source_leak_name_combo: QComboBox = Row('soource or leak name',
+                    items, self.widget, self.form_layout, 
+                    editable=True).label_combo()
+
+        items = [] # to database
+        self.product_combo: QComboBox = Row('product : ', items, self.widget, 
                     self.form_layout, editable=True).label_combo()
 
-        items = [] #to database
-        cost_combo: QComboBox = Row('cost : ', items, self.widget,
-                            self.form_layout, editable=True).label_combo()
+        nuber_validator: QValidator = QDoubleValidator()
+        nuber_validator.setRange(0.0, 1e12, 2)
 
-        items = [] #to database
-        amount_combo: QComboBox = Row('amount : ', items, self.widget,
-                            self.form_layout, editable=True).label_combo()
+        items = [str(self.entry.cost)]
+        self.cost_line: QLineEdit = Row('cost : ', items, self.widget,
+                            self.form_layout, editable=True).label_editor()
+        self.cost_line.setValidator(nuber_validator)
+        self.cost_line.setText(str(self.entry.cost))
 
-        items = [] #to database
-        total_combo: QComboBox = Row('total : ', items, self.widget,
-                            self.form_layout, editable=True).label_combo()
+        items = [str(self.entry.amount)] 
+        self.amount_line: QLineEdit = Row('amount : ', items, self.widget,
+                            self.form_layout, editable=True).label_editor()
+        self.amount_line.setValidator(nuber_validator)
+
+        items = [str(self.entry.total)]
+        self.total_line: QLineEdit = Row('total : ', items , self.widget,
+                            self.form_layout, editable=True).label_editor()
+        self.total_line.setValidator(nuber_validator)
 
     def _add_buttons_panel(self) -> None:
         buttons: Dict[str, QPushButton] = {
@@ -114,6 +132,9 @@ class EntryView:
         else:
             buttons['save'].setDisabled(True)
             
+        buttons['save'].clicked.connect(self.validate_and_insert_to_db)
+        buttons['cancel'].clicked.connect(self.widget.close)
+
     def set_date_time_from_entry(self, dt: QDateTime) -> None:
         self.entry.date_time = dt       
         self.date_time_label.setText(dt.toString())
@@ -121,3 +142,12 @@ class EntryView:
     def _open_calendar_view(self, label: QLabel, event: QMouseEvent) -> None:
         CalendarPane(self.widget, self)
 
+    def validate_and_insert_to_db(self) -> None:
+        if  self.bill_name_combo.currentText() == '' or \
+            self.source_leak_name_combo.currentText() == '' or\
+            self.product_combo.currentText() == '':
+            Achtung(self.widget, 
+            'bill name, source leak field and\nproduct value must be not empty')
+
+    def calculation(self, event) -> None:
+        print ("ebites samei")
