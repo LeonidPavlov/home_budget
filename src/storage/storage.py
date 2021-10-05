@@ -4,8 +4,7 @@ from genericpath import isdir, isfile
 from sqlite3 import Connection, connect
 from enum import Enum
 
-
-from src.view.alert import Achtung, AchtungType
+from src.view.dialogs.alert import Achtung, AchtungType
 
 
 class DatabaseAndColumnsName(Enum):

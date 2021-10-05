@@ -1,7 +1,7 @@
 from PyQt5.QtGui import QIcon, QKeySequence
 from PyQt5.QtWidgets import QAction, QLabel, QMainWindow,\
-                         QMenu, QMenuBar, QToolBar, QWidget
-from PyQt5.QtCore import QSize, Qt
+                         QMenu, QMenuBar, QToolBar
+from PyQt5.QtCore import Qt
 from functools import partial
 
 import qrc.qrc_resources as res

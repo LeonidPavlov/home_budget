@@ -5,16 +5,16 @@ from src.model.transaction import AccountingEntry, EntryType
 
 
 def test_entry_type_1() -> None:
-    assert(EntryType.debet_credit_plus.value == '+ debet <-> + credit')
+    assert(EntryType.debet_credit_plus.value == '+ debet | + credit')
 
 def test_entry_type_2() -> None:
-    assert(EntryType.debet_credit_minus.value == '- debet <-> - credit' )
+    assert(EntryType.debet_credit_minus.value == '- debet | - credit' )
 
 def test_entry_type_3() -> None:
-    assert(EntryType.debet_debet.value == '- debet <-> + debet')
+    assert(EntryType.debet_debet.value == '- debet | + debet')
 
 def test_entry_type_4() -> None:
-    assert(EntryType.credit_credit.value == '- credit <-> + credit')
+    assert(EntryType.credit_credit.value == '- credit | + credit')
 
 ae: AccountingEntry = AccountingEntry()
 def test_AccountingEntry_init() -> None:

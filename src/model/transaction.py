@@ -3,11 +3,10 @@ from enum import Enum
 from PyQt5.QtCore import QDateTime
 
 class EntryType(Enum):
-    debet_credit_plus = '+ debet <-> + credit'
-    debet_credit_minus = '- debet <-> - credit'
-    debet_debet = '- debet <-> + debet'
-    credit_credit = '- credit <-> + credit'
-
+    debet_credit_plus = '+ debet | + credit'
+    debet_credit_minus = '- debet | - credit'
+    debet_debet = '- debet | + debet'
+    credit_credit = '- credit | + credit'
 
 
 class AccountingEntry:

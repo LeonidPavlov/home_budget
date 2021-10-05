@@ -3,8 +3,8 @@ from enum import Enum
 from typing import Optional
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QTextCharFormat
-from PyQt5.QtWidgets import QApplication, QDialog, QDialogButtonBox, QLabel, QPlainTextDocumentLayout, QPlainTextEdit,\
-                                QVBoxLayout, QWidget, QTextEdit
+from PyQt5.QtWidgets import QApplication, QDialog, QDialogButtonBox,\
+                            QPlainTextEdit, QVBoxLayout, QWidget, QTextEdit
 
 
 class AchtungType(Enum):
@@ -59,3 +59,5 @@ class Achtung:
         self.dialog.setLayout(layout)
         self.dialog.setMinimumWidth(400)
         self.dialog.show()
+
+
