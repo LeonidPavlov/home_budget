@@ -2,6 +2,7 @@ from datetime import date
 from enum import Enum
 from PyQt5.QtCore import QDateTime
 
+
 class EntryType(Enum):
     debet_credit_plus = '+ debet | + credit'
     debet_credit_minus = '- debet | - credit'
@@ -29,3 +30,13 @@ class AccountingEntry:
         self.cost = cost
         self.amount = amount
         self.total = total
+
+    def define_type_by_value(self, value: str) -> EntryType:
+        result: EntryType = EntryType.debet_credit_plus
+        if value == '- debet | - credit':
+            result = EntryType.debet_credit_minus
+        if value == '- debet | + debet':
+            result = EntryType.debet_debet
+        if value == '- credit | + credit':
+            result = EntryType.credit_credit
+        return result

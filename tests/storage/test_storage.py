@@ -30,7 +30,7 @@ def test_create_table_query() -> None:
         """)
 
 def test_create_db_file_when_it_exist() -> None:
-    assert(storage.create_database_file() == False)
+    assert(storage.create_database_file() == True)
     os.remove('test_db_dir/test_db.db')
     os.rmdir('test_db_dir')
 

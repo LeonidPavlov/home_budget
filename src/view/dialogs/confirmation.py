@@ -62,3 +62,4 @@ class Confirmation(QDialog):
     def confirmation(self, event) -> None:
         self.callback(event)
         self.close()
+

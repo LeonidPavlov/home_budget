@@ -43,3 +43,20 @@ def test_amount_value() -> None:
 
 def test_total_value() -> None:
     assert(ae.total == 1.0)
+
+def test_define_type_debet_credit_plus() -> None:
+    ae.entry_type = EntryType.debet_credit_plus
+    assert(ae.define_type_by_value('+ debet | + credit') == EntryType.debet_credit_plus)
+
+def test_define_type_debet_credit_minus() -> None:
+    ae.entry_type = EntryType.debet_credit_minus
+    assert(ae.define_type_by_value('- debet | - credit') == EntryType.debet_credit_minus)
+
+def test_define_type_debet_debet() -> None:
+    ae.entry_type = EntryType.debet_debet
+    assert(ae.define_type_by_value('- debet | + debet') == EntryType.debet_debet)
+
+def test_define_type_credit_credit() -> None:
+    ae.entry_type = EntryType.credit_credit
+    assert(ae.define_type_by_value('- credit | + credit') == EntryType.credit_credit)
+

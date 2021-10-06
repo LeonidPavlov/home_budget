@@ -11,9 +11,8 @@ from src.model.transaction import AccountingEntry
 
 
 class MainWindow(QMainWindow):
-    def __init__(self, crud: Crud) -> None:
+    def __init__(self) -> None:
         super().__init__()
-        self.crud: Crud = crud
         self.setCentralWidget(QLabel('<h1>PLACEHOLDER</h1>'))
         # self.setMinimumSize(640, 360)
         self._add_menu_bar()
@@ -41,7 +40,7 @@ class MainWindow(QMainWindow):
         toolbar.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
     
     def _setup_entry_widget(self, entry: AccountingEntry) -> None:
-        EntryView(self, entry, self.crud)
+        EntryView(self, entry)
     
     def set_dev_style(self) -> None:
         self.setStyleSheet('''

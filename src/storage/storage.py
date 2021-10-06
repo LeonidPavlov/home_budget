@@ -1,8 +1,10 @@
 import os
 import sqlite3
 from genericpath import isdir, isfile
-from sqlite3 import Connection, connect
+from sqlite3 import Connection, connect, Cursor
 from enum import Enum
+
+from PyQt5.QtWidgets import QWidget
 
 from src.view.dialogs.alert import Achtung, AchtungType
 
@@ -26,30 +28,34 @@ class Storage:
         self.file_name = database_direcory_name + '/' + database_file_name
         
     def create_directory(self) -> bool:
+        result: bool = False
         try:
             if not isdir(self.database_directory_name):
                 os.mkdir(self.database_directory_name)
-                return True
-            else:
-                return False
+                result = True
         except (FileExistsError) as err:
             Achtung(None, err.__str__(), AchtungType.error, 
-                    'create directory method', __file__)
+                    'create directory function', __file__ )
+        return result
 
     def create_database_file(self) -> bool:
+        conn: Connection 
         truth: bool = False
-        try:    
-            if not isfile(self.file_name):
-                conn: Connection = self.connect_with_db()
-                self.execute_query(conn, self.create_tables_query())
-                self.close_connection(conn)
-                truth = True
-            else:
-                truth = False
+        try:
+            conn = connect(self.file_name)
+            cursor: Cursor = conn.cursor()
+            cursor.execute(self.create_tables_query())
+            conn.commit()
+            cursor.close()
+            truth = True
         except sqlite3.Error as err:
             Achtung(None, err.__str__(), AchtungType.error, 
-                    'create database file method', __file__)
-        return truth
+                    'crate database file', __file__ )
+            truth = False
+        finally:
+            if conn:
+                conn.close()
+            return truth
 
     def create_tables_query(self) -> str:
         d = DatabaseAndColumnsName
@@ -67,24 +73,3 @@ class Storage:
                         );
         """
         return query
-
-
-    def connect_with_db(self) -> Connection:
-        try:
-            conn = connect(self.file_name)
-            return conn
-        except sqlite3.Error as err:
-            Achtung(None, err.__str__(), AchtungType.error, 
-                    'connect_with_db method', __file__)
-
-
-    def execute_query(self, conn: Connection, query: str = '') -> None:
-        try:
-            conn.execute(query)
-        except sqlite3.Error as err:
-            Achtung(None, err.__str__(), AchtungType.error, 
-                    'execute_querry method', __file__)
-
-    
-    def close_connection(self, conn: Connection) -> None:
-        conn.close()

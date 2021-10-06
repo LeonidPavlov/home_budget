@@ -1,8 +1,7 @@
-from src.storage.storage import Storage
+from sqlite3 import Connection
+from src.model.transaction import AccountingEntry
+from src.storage.storage import DatabaseAndColumnsName, Storage
+
 
 class Crud:
-    def __init__(self, storage: Storage) -> None:
-        pass
-
-    def ebun(self) -> None:
-        print('crud')
+    pass
