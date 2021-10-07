@@ -5,6 +5,7 @@ from PyQt5.QtCore import QDateTime, Qt
 from PyQt5.QtWidgets import QComboBox, QFormLayout, QHBoxLayout, QLabel, \
     QLineEdit, QMainWindow, QPushButton, QVBoxLayout, \
     QWidget
+from PyQt5.QtGui import QKeyEvent
 
 from src.view.dialogs.alert import Achtung, AchtungType
 from src.view.chooser.calendar_pane import CalendarPane
@@ -69,7 +70,6 @@ class EntryView:
 
         id_label: QLabel = Row('entry id : ', [str(self.entry.entry_id)],
                                self.widget, self.form_layout).label_label()
-
         date_time: str = self.entry.date_time.toString()
         self.date_time_label: QLabel = Row('date and time : ', [date_time],
                                            self.widget,
@@ -106,6 +106,8 @@ class EntryView:
         nuber_validator: QValidator = QDoubleValidator()
         nuber_validator.setRange(0.0, 1e12, 2)
 
+        tooltip_text: str = 'print number value\nand press Enter'
+        
         items = [str(self.entry.cost)]
         self.cost_line: QLineEdit = Row('cost : ', items, self.widget,
                                         self.form_layout,
@@ -114,6 +116,7 @@ class EntryView:
         self.cost_line.setText(str(self.entry.cost))
         self.cost_line.editingFinished.connect(partial(
             self._calculate, self.cost_line))
+        self.cost_line.setToolTip(tooltip_text)
 
         items = [str(self.entry.amount)]
         self.amount_line: QLineEdit = Row('amount : ', items, self.widget,
@@ -122,6 +125,7 @@ class EntryView:
         self.amount_line.setValidator(nuber_validator)
         self.amount_line.editingFinished.connect(partial(
             self._calculate, self.amount_line))
+        self.amount_line.setToolTip(tooltip_text)
 
         items = [str(self.entry.total)]
         self.total_line: QLineEdit = Row('total : ', items, self.widget,
@@ -130,6 +134,7 @@ class EntryView:
         self.total_line.setValidator(nuber_validator)
         self.total_line.editingFinished.connect(partial(
             self._calculate, self.total_line, False))
+        self.total_line.setToolTip(tooltip_text)
 
     def _add_buttons_panel(self) -> None:
         buttons: Dict[str, QPushButton] = {
@@ -164,8 +169,7 @@ class EntryView:
                 self.source_leak_name_combo.currentText() == '' or \
                 self.product_combo.currentText() == '':
             Achtung(self.widget,
-                    'bill name, source leak field and\nproduct value \
-                    must be not empty')
+                'bill name,\n source leak field\n and product value\n must be not empty')
         else:
             truth = True
         return truth
@@ -213,4 +217,4 @@ class EntryView:
         return entry
 
     def insert_callback(self, event) -> None:
-        print('callback')
+        Crud(self.entry, self.widget).insert_new()

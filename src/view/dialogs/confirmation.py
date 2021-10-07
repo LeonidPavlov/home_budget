@@ -7,8 +7,10 @@ class Confirmation(QDialog):
     def __init__(self,  parent: Optional[QWidget] = ...,
                         callback = ...,
                         text: str = "Confirm saving accounting entry:", 
+                        question_only: bool = False,
                         entry: AccountingEntry = AccountingEntry()) -> None:
         super().__init__(parent=parent)
+        self.question_only = question_only
         self.text = text
         self.callback = callback
         self.entry = entry
@@ -25,8 +27,8 @@ class Confirmation(QDialog):
         self.add_confirmatin_buttons()
         
         self.setStyleSheet( """
-                                background-color: green;
-                                color: whitesmoke;
+                                background-color: orange;
+                                color: navy;
                             """)
         self.setLayout(self.layout)
         self.show()
@@ -34,7 +36,8 @@ class Confirmation(QDialog):
 
     def  filling_content(self) -> None:
         text: str = self.text + '\n'
-        text = text +   'date -> ' + self.entry.date_time.toString() + '\n' +\
+        if not self.question_only:
+            text = text + 'date -> ' + self.entry.date_time.toString() + '\n' +\
                         'entry type -> ' + self.entry.entry_type.value + '\n'\
                         'bill name -> ' + self.entry.bill_name + '\n' +\
                         'source or leak -> ' + self.entry.source_leak_name+'\n'\

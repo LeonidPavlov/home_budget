@@ -12,9 +12,14 @@ from src.view.dialogs.alert import Achtung, AchtungType
 class DatabaseAndColumnsName(Enum):
     table_name = 'source_docs'
     entry_id = 'entry_id'
-    date = 'date'
+    year = 'year'
+    month = 'month'
+    day = 'day'
+    hours = 'hours'
+    minutes = 'minutes'
     entry_type = 'entry_type'
     bill_name = 'bill_name'
+    source = 'source'
     product = 'product'
     cost = 'cost'
     amount = 'amount'
@@ -63,8 +68,13 @@ class Storage:
                         create table if not exists {d.table_name.value}
                         (
                             {d.entry_id.value} integer primary key,
-                            {d.date.value} text,
+                            {d.year.value},
+                            {d.month.value},
+                            {d.day.value},
+                            {d.hours.value},
+                            {d.minutes.value},
                             {d.entry_type.value} text,
+                            {d.source.value} text,
                             {d.bill_name.value} text,
                             {d.product.value} text,
                             {d.cost.value} real,
