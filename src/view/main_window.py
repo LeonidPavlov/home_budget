@@ -1,9 +1,10 @@
 from PyQt5 import QtGui
-from PyQt5.QtGui import QIcon, QKeySequence, QKeyEvent
+from PyQt5.QtGui import QIcon, QKeySequence
 from PyQt5.QtWidgets import QAction, QLabel, QMainWindow,\
                          QMenu, QMenuBar, QToolBar
 from PyQt5.QtCore import Qt
 from functools import partial
+from src.view.selection import SelectionView
 
 import qrc.qrc_resources as res
 from src.view.entry_view import EntryView
@@ -14,10 +15,10 @@ from src.view.dialogs.confirmation import Confirmation
 class MainWindow(QMainWindow):
     def __init__(self) -> None:
         super().__init__()
-        self.setCentralWidget(QLabel('<h1>PLACEHOLDER</h1>'))
-        # self.setMinimumSize(640, 360)
+        self.set_placeholder()
         self._add_menu_bar()
         self.set_dev_style()
+        self.resize()
 
     def _add_menu_bar(self) -> None:
         menu_bar: QMenuBar = QMenuBar(self)
@@ -52,11 +53,14 @@ class MainWindow(QMainWindow):
         toolbar.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
 
     def _setup_entry_widget(self, entry: AccountingEntry) -> None:
-        EntryView(self, entry)
+        EntryView(self, entry, self.set_placeholder)
     
     def _setup_search_widget(self) -> None:
-        print('search widget')
-    
+        SelectionView(self, self.set_placeholder)
+
+    def set_placeholder(self) -> None:
+        self.setCentralWidget(QLabel('<h1>PLACEHOLDER</h1>'))
+
     def set_dev_style(self) -> None:
         self.setStyleSheet('''
             background-color: bisque;
@@ -69,8 +73,6 @@ class MainWindow(QMainWindow):
     def close_callback(self, event) -> None:
         print(event)
         self.close()
-
-    def keyPressEvent(self, event: QKeyEvent) -> None:
-        if event.key() == Qt.Key_Escape:
-            Confirmation(self, self.close_callback, 'Close App ? ...', True)
-        super().keyPressEvent(event)        
+    
+    def resize(self) -> None:
+        self.setMinimumSize(640, 360)

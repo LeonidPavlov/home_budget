@@ -5,7 +5,6 @@ from PyQt5.QtCore import QDateTime, Qt
 from PyQt5.QtWidgets import QComboBox, QFormLayout, QHBoxLayout, QLabel, \
     QLineEdit, QMainWindow, QPushButton, QVBoxLayout, \
     QWidget
-from PyQt5.QtGui import QKeyEvent
 
 from src.view.dialogs.alert import Achtung, AchtungType
 from src.view.chooser.calendar_pane import CalendarPane
@@ -50,30 +49,32 @@ class Row:
         return edit
 
 
-class EntryView:
+class EntryView(QWidget):
 
-    def __init__(self, parent: QMainWindow, entry: AccountingEntry) -> None:
+    def __init__(self,  parent: QMainWindow = ..., 
+                        entry: AccountingEntry = AccountingEntry(),
+                        set_placeholder = None) -> None:
+        super().__init__(parent = parent)
         self.entry = entry
-        self.widget: QWidget = QWidget(parent)
+        self.set_placeholder = set_placeholder
         self.parent: QMainWindow = parent
         self.main_layout: QVBoxLayout = QVBoxLayout()
         self.form_layout: QFormLayout = QFormLayout()
         self.h_layout: QHBoxLayout = QHBoxLayout()
         self._init_fields()
         self._add_buttons_panel()
-        self.widget.setLayout(self.main_layout)
+        self.setLayout(self.main_layout)
         self.main_layout.addLayout(self.form_layout)
         self.main_layout.addLayout(self.h_layout)
-        self.parent.setCentralWidget(self.widget)
+        self.parent.setCentralWidget(self)
 
     def _init_fields(self) -> None:
 
         id_label: QLabel = Row('entry id : ', [str(self.entry.entry_id)],
-                               self.widget, self.form_layout).label_label()
-        date_time: str = self.entry.date_time.toString()
+                               self, self.form_layout).label_label()
+        date_time: str = self.entry.date_time.toString(Qt.DefaultLocaleLongDate)
         self.date_time_label: QLabel = Row('date and time : ', [date_time],
-                                           self.widget,
-                                           self.form_layout).label_label()
+                                self, self.form_layout).label_label()
         self.date_time_label.mousePressEvent = partial(
             self._open_calendar_view, self.date_time_label)
 
@@ -82,24 +83,23 @@ class EntryView:
                             EntryType.debet_credit_plus.value,
                             EntryType.debet_credit_minus.value]
         self.entry_type_combo: QComboBox = Row('entry type : ',
-                                               items, self.widget,
+                                               items, self,
                                                self.form_layout). \
             label_combo()
 
         items = []  # to database
         self.bill_name_combo: QComboBox = Row('bill name : ', items,
-                                              self.widget,
-                                              self.form_layout,
+                                              self, self.form_layout,
                                               editable=True).label_combo()
 
         items = []  # to database
         self.source_leak_name_combo: QComboBox = Row('source or leak name',
-                                                     items, self.widget,
+                                                     items, self,
                                                      self.form_layout,
                                                      editable=True).label_combo()
 
         items = []  # to database
-        self.product_combo: QComboBox = Row('product : ', items, self.widget,
+        self.product_combo: QComboBox = Row('product : ', items, self,
                                             self.form_layout,
                                             editable=True).label_combo()
 
@@ -109,7 +109,7 @@ class EntryView:
         tooltip_text: str = 'print number value\nand press Enter'
         
         items = [str(self.entry.cost)]
-        self.cost_line: QLineEdit = Row('cost : ', items, self.widget,
+        self.cost_line: QLineEdit = Row('cost : ', items, self,
                                         self.form_layout,
                                         editable=True).label_editor()
         self.cost_line.setValidator(nuber_validator)
@@ -119,7 +119,7 @@ class EntryView:
         self.cost_line.setToolTip(tooltip_text)
 
         items = [str(self.entry.amount)]
-        self.amount_line: QLineEdit = Row('amount : ', items, self.widget,
+        self.amount_line: QLineEdit = Row('amount : ', items, self,
                                           self.form_layout,
                                           editable=True).label_editor()
         self.amount_line.setValidator(nuber_validator)
@@ -128,7 +128,7 @@ class EntryView:
         self.amount_line.setToolTip(tooltip_text)
 
         items = [str(self.entry.total)]
-        self.total_line: QLineEdit = Row('total : ', items, self.widget,
+        self.total_line: QLineEdit = Row('total : ', items, self,
                                          self.form_layout,
                                          editable=True).label_editor()
         self.total_line.setValidator(nuber_validator)
@@ -152,15 +152,19 @@ class EntryView:
         else:
             buttons['new'].setDisabled(True)
 
-        buttons['cancel'].clicked.connect(self.widget.close)
+        buttons['cancel'].clicked.connect(self.close)
+        buttons['cancel'].clicked.connect(self.set_placeholder)
+        buttons['cancel'].clicked.connect(self.parent.resize)
+
         buttons['new'].clicked.connect(self._new_insertion)
 
-    def set_date_time_from_entry(self, dt: QDateTime) -> None:
+    def set_date_time(self, dt: QDateTime, label: QLabel) -> None:
         self.entry.date_time = dt
         self.date_time_label.setText(dt.toString())
 
     def _open_calendar_view(self, label: QLabel, event: QMouseEvent) -> None:
-        CalendarPane(self.widget, self)
+        self.format: Qt.DateFormat = Qt.DefaultLocaleLongDate
+        CalendarPane(self, self.date_time_label, self.format)
 
     def _validate_text_input(self) -> bool:
         self._validate_numbers()
@@ -168,7 +172,7 @@ class EntryView:
         if self.bill_name_combo.currentText() == '' or \
                 self.source_leak_name_combo.currentText() == '' or \
                 self.product_combo.currentText() == '':
-            Achtung(self.widget,
+            Achtung(self,
                 'bill name,\n source leak field\n and product value\n must be not empty')
         else:
             truth = True
@@ -199,14 +203,16 @@ class EntryView:
         self.entry = entry
         self._validate_numbers()
         if self._validate_text_input():
-            Confirmation(self.widget, self.insert_callback, entry=self.entry)
+            Confirmation(self, self.insert_callback, entry=self.entry)
 
     def _collect_entry_values_from_widget(self) -> AccountingEntry:
+        self._validate_numbers()
         entry: AccountingEntry = AccountingEntry(
             entry_id=self.entry.entry_id,
-            date_time=self.entry.date_time,
+            date_time=self.entry.date_time.fromString(
+                                self.date_time_label.text(), self.format),
             entry_type=self.entry.define_type_by_value( \
-                self.entry_type_combo.currentText()),
+                            self.entry_type_combo.currentText()),
             bill_name=self.bill_name_combo.currentText(),
             source_leak_name=self.source_leak_name_combo.currentText(),
             product=self.product_combo.currentText(),
@@ -217,4 +223,6 @@ class EntryView:
         return entry
 
     def insert_callback(self, event) -> None:
-        Crud(self.entry, self.widget).insert_new()
+        Crud(self.entry, self).insert_new()
+    
+    

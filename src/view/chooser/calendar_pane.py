@@ -1,9 +1,9 @@
+from typing import Dict
 from PyQt5.QtGui import QKeyEvent
 from PyQt5.QtWidgets import QDialog, QLabel, QPushButton, QTimeEdit, QVBoxLayout,\
                             QWidget, QCalendarWidget, QHBoxLayout
 from PyQt5.QtCore import QDate, QTime, QTimer, Qt, QDateTime
 from datetime import datetime as dt
-
 
 class CalendarPane(QDialog):
     """
@@ -16,9 +16,12 @@ class CalendarPane(QDialog):
         - confirmation buttons
     """
 
-    def __init__(self, parent: QWidget, entry_view: object) -> None:
+    def __init__(self, parent: QWidget, target: QLabel,
+                            format: Qt.DateFormat) -> None:
         super().__init__(parent = parent)
-        self.__entry_view = entry_view
+        self._parent = parent
+        self.format = format
+        self.target = target
         self.__set_root_layout()
         self.__set_label_with_date_and_going_clock()
         self.__set_calendar_view()
@@ -83,9 +86,12 @@ class CalendarPane(QDialog):
         datetime: QDateTime = QDateTime()
         datetime.setDate(date)
         datetime.setTime(time)
-        self.__entry_view.set_date_time_from_entry(datetime)  
+        self.target.setText(datetime.toString(self.format))
         self.close()
+        
 
     def keyPressEvent(self, event1: QKeyEvent) -> None:
         if event1.key() == Qt.Key_Escape:
             self.close()
+
+    
