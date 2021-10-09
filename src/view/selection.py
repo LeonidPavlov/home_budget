@@ -1,13 +1,14 @@
 from datetime import datetime
 from functools import partial
-from typing import Dict, Optional
+from typing import Dict, List, Optional, Tuple
 from PyQt5.QtCore import QDateTime
-from PyQt5.QtWidgets import QHBoxLayout, QLabel, QLayout, QMainWindow, QPushButton,\
-                                 QVBoxLayout, QWidget
-from PyQt5.QtGui import QKeyEvent, QMouseEvent
+from PyQt5.QtWidgets import QButtonGroup, QCheckBox, QHBoxLayout, QLabel,\
+                            QMainWindow, QPushButton, QVBoxLayout, QWidget
+from PyQt5.QtGui import QMouseEvent
 from PyQt5.QtCore import Qt
 
 from src.view.chooser.calendar_pane import CalendarPane
+from src.storage.selection import Selection
 
 class TimeRepresentation:
     def __init__(self, parent: QWidget, layout: QVBoxLayout, 
@@ -15,13 +16,43 @@ class TimeRepresentation:
         self._parent = parent
         self._main_layout = layout
         self._format = format
+        
+        self.selection = Selection(self._parent)
+        self.search_result: List[Tuple[int]] = []
+        
         self._main_layout.addWidget(
             QLabel('choose time gap to selection from database'))
-        self._layout = QHBoxLayout()
-        self._setup_labels(self._layout)
-        self._main_layout.addLayout(self._layout)
+        
+        self._setup_all_selection()
 
-    def _setup_labels(self, layout: QHBoxLayout) -> None:
+        self._layout = QHBoxLayout()
+        self._setup_time_labels(self._layout)
+        self._main_layout.addLayout(self._layout)
+        
+        self._button_group: QButtonGroup = QButtonGroup(self._parent)
+        self._button_group.addButton(self._check_all)
+        self._button_group.addButton(self._check_date)
+
+    def _setup_all_selection(self) -> None:
+        all_layout = QHBoxLayout()
+        all_layout.addWidget(QLabel('All'))
+        self._check_all: QCheckBox = QCheckBox(self._parent)
+        self._check_all.stateChanged.connect(self.selection_from_db)
+        all_layout.addWidget(self._check_all)
+        self.button_all: QPushButton = QPushButton()
+        self.button_all.setVisible(False)
+        all_layout.addWidget(self.button_all)
+        self._main_layout.addLayout(all_layout)
+
+    def selection_from_db(self) -> None:
+        if self._check_all.isChecked():
+            self.search_result = self.selection.selection_all_id()
+            self.button_all.setText('result->' + str(len(self.search_result)))
+            self.button_all.setVisible(True)
+        if self._check_date.isChecked():
+            self.button_all.setVisible(False)
+
+    def _setup_time_labels(self, layout: QHBoxLayout) -> None:
         layout.addWidget(QLabel('From'))
         self._begin_label = QLabel(QDateTime()\
                                     .currentDateTime().toString(self._format))
@@ -35,7 +66,9 @@ class TimeRepresentation:
                                     .currentDateTime().toString(self._format))
         self._end_label.mousePressEvent = partial(self._open_calendar, 
                                             self._parent, self._end_label)
-        layout.addWidget(self._end_label) 
+        layout.addWidget(self._end_label)
+        self._check_date: QCheckBox = QCheckBox(self._parent)
+        layout.addWidget(self._check_date) 
 
     def begin_label(self) -> QLabel:
         return self._begin_label
@@ -52,13 +85,17 @@ class TimeRepresentation:
         CalendarPane(parent, target, self._format)
 
 
+class StringFieldRepresentation:
+    def __init__(self, parent: QWidget, layout: QVBoxLayout) -> None:
+        pass
+
 class SelectionView(QWidget):
     def __init__(self, parent: QMainWindow, set_placeholder) -> None:
         super().__init__(parent=parent)
         self.set_placeholder = set_placeholder
         self._parent = parent
         self._layout: QVBoxLayout = QVBoxLayout()
-        self._format: Qt.DateFormat = Qt.TextDate
+        self._format: Qt.DateFormat = Qt.SystemLocaleShortDate
 
         tr: TimeRepresentation = TimeRepresentation(self, 
                                         self._layout, self._format)

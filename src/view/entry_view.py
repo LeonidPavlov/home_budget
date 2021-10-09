@@ -60,6 +60,7 @@ class EntryView(QWidget):
         self.parent: QMainWindow = parent
         self.main_layout: QVBoxLayout = QVBoxLayout()
         self.form_layout: QFormLayout = QFormLayout()
+        self.format: Qt.DateFormat = Qt.TextDate
         self.h_layout: QHBoxLayout = QHBoxLayout()
         self._init_fields()
         self._add_buttons_panel()
@@ -72,7 +73,7 @@ class EntryView(QWidget):
 
         id_label: QLabel = Row('entry id : ', [str(self.entry.entry_id)],
                                self, self.form_layout).label_label()
-        date_time: str = self.entry.date_time.toString(Qt.DefaultLocaleLongDate)
+        date_time: str = self.entry.date_time.toString(self.format)
         self.date_time_label: QLabel = Row('date and time : ', [date_time],
                                 self, self.form_layout).label_label()
         self.date_time_label.mousePressEvent = partial(
@@ -163,7 +164,7 @@ class EntryView(QWidget):
         self.date_time_label.setText(dt.toString())
 
     def _open_calendar_view(self, label: QLabel, event: QMouseEvent) -> None:
-        self.format: Qt.DateFormat = Qt.DefaultLocaleLongDate
+        self.format: Qt.DateFormat = self.format
         CalendarPane(self, self.date_time_label, self.format)
 
     def _validate_text_input(self) -> bool:
@@ -173,7 +174,11 @@ class EntryView(QWidget):
                 self.source_leak_name_combo.currentText() == '' or \
                 self.product_combo.currentText() == '':
             Achtung(self,
-                'bill name,\n source leak field\n and product value\n must be not empty')
+                '''
+                    \r\nbill name
+                    \r\nsource leak feald and
+                    \r\nproduct must be not empty
+                ''')
         else:
             truth = True
         return truth

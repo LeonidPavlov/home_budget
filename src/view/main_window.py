@@ -68,6 +68,9 @@ class MainWindow(QMainWindow):
             border-color: navy;
             font-size: 14px;
             font-weight: 900;
+            qcheckbox: {
+                border-width: 3px
+            }
         ''')
 
     def close_callback(self, event) -> None:
