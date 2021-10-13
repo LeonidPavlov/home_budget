@@ -7,6 +7,6 @@ class BillType(Enum):
 
 
 class Bill:
-    def __init__(self,  article: str, type: BillType) -> None:
-        self.__type = type
+    def __init__(self,  article: str, bill_type: BillType) -> None:
+        self._type = bill_type
 

@@ -1,8 +1,5 @@
-import sqlite3
-
 from sqlite3 import Connection
 from sqlite3 import Cursor, Error, connect
-
 from PyQt5.QtWidgets import QWidget
 
 from src.model.transaction import AccountingEntry
@@ -17,7 +14,6 @@ class Crud:
         self.entry = entry
         self.parent = parent
         self.storage = Storage()
-        
 
     def insert_new(self) -> bool:
         truth: bool = False
@@ -26,6 +22,7 @@ class Crud:
             cursor: Cursor = conn.cursor()
             query: str = f"""
                 INSERT INTO {Crud.n.table_name.value} (
+                    {Crud.n.datetime.value},
                     {Crud.n.year.value},
                     {Crud.n.month.value},
                     {Crud.n.day.value},
@@ -39,6 +36,7 @@ class Crud:
                     {Crud.n.amount.value},
                     {Crud.n.total.value}
                 ) VALUES (
+                    '{self.entry.date_time.toString()}',
                     {self.entry.date_time.date().year()},
                     {self.entry.date_time.date().month()},
                     {self.entry.date_time.date().day()},
@@ -59,6 +57,7 @@ class Crud:
             truth = True
         except Error as err:
             print(err.__str__())
+            truth = False
         finally:
             if conn:
                 conn.close()

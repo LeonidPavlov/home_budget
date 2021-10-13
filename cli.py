@@ -1,10 +1,9 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget
+from PyQt5.QtWidgets import QApplication
 
 from src.view.dialogs.alert import Achtung, AchtungType
 from src.storage.storage import Storage
 from src.view.main_window import MainWindow
-from src.storage.crud import Crud
 
 storage: Storage = Storage()
 try:

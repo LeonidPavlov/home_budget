@@ -51,10 +51,10 @@ class Row:
 
 class EntryView(QWidget):
 
-    def __init__(self,  parent: QMainWindow = ..., 
-                        entry: AccountingEntry = AccountingEntry(),
-                        set_placeholder = None) -> None:
-        super().__init__(parent = parent)
+    def __init__(self, parent: QMainWindow = ...,
+                 entry: AccountingEntry = AccountingEntry(),
+                 set_placeholder=None) -> None:
+        super().__init__(parent=parent)
         self.entry = entry
         self.set_placeholder = set_placeholder
         self.parent: QMainWindow = parent
@@ -75,7 +75,7 @@ class EntryView(QWidget):
                                self, self.form_layout).label_label()
         date_time: str = self.entry.date_time.toString(self.format)
         self.date_time_label: QLabel = Row('date and time : ', [date_time],
-                                self, self.form_layout).label_label()
+                                           self, self.form_layout).label_label()
         self.date_time_label.mousePressEvent = partial(
             self._open_calendar_view, self.date_time_label)
 
@@ -104,16 +104,16 @@ class EntryView(QWidget):
                                             self.form_layout,
                                             editable=True).label_combo()
 
-        nuber_validator: QValidator = QDoubleValidator()
-        nuber_validator.setRange(0.0, 1e12, 2)
+        number_validator: QValidator = QDoubleValidator()
+        number_validator.setRange(0.0, 1e12, 2)
 
         tooltip_text: str = 'print number value\nand press Enter'
-        
+
         items = [str(self.entry.cost)]
         self.cost_line: QLineEdit = Row('cost : ', items, self,
                                         self.form_layout,
                                         editable=True).label_editor()
-        self.cost_line.setValidator(nuber_validator)
+        self.cost_line.setValidator(number_validator)
         self.cost_line.setText(str(self.entry.cost))
         self.cost_line.editingFinished.connect(partial(
             self._calculate, self.cost_line))
@@ -123,7 +123,7 @@ class EntryView(QWidget):
         self.amount_line: QLineEdit = Row('amount : ', items, self,
                                           self.form_layout,
                                           editable=True).label_editor()
-        self.amount_line.setValidator(nuber_validator)
+        self.amount_line.setValidator(number_validator)
         self.amount_line.editingFinished.connect(partial(
             self._calculate, self.amount_line))
         self.amount_line.setToolTip(tooltip_text)
@@ -132,7 +132,7 @@ class EntryView(QWidget):
         self.total_line: QLineEdit = Row('total : ', items, self,
                                          self.form_layout,
                                          editable=True).label_editor()
-        self.total_line.setValidator(nuber_validator)
+        self.total_line.setValidator(number_validator)
         self.total_line.editingFinished.connect(partial(
             self._calculate, self.total_line, False))
         self.total_line.setToolTip(tooltip_text)
@@ -174,9 +174,9 @@ class EntryView(QWidget):
                 self.source_leak_name_combo.currentText() == '' or \
                 self.product_combo.currentText() == '':
             Achtung(self,
-                '''
+                    '''
                     \r\nbill name
-                    \r\nsource leak feald and
+                    \r\nsource leak field and
                     \r\nproduct must be not empty
                 ''')
         else:
@@ -215,9 +215,9 @@ class EntryView(QWidget):
         entry: AccountingEntry = AccountingEntry(
             entry_id=self.entry.entry_id,
             date_time=self.entry.date_time.fromString(
-                                self.date_time_label.text(), self.format),
-            entry_type=self.entry.define_type_by_value( \
-                            self.entry_type_combo.currentText()),
+                self.date_time_label.text(), self.format),
+            entry_type=self.entry.define_type_by_value(
+                                        self.entry_type_combo.currentText()),
             bill_name=self.bill_name_combo.currentText(),
             source_leak_name=self.source_leak_name_combo.currentText(),
             product=self.product_combo.currentText(),
@@ -229,5 +229,3 @@ class EntryView(QWidget):
 
     def insert_callback(self, event) -> None:
         Crud(self.entry, self).insert_new()
-    
-    

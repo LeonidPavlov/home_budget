@@ -1,16 +1,14 @@
-from PyQt5 import QtGui
 from PyQt5.QtGui import QIcon, QKeySequence
 from PyQt5.QtWidgets import QAction, QLabel, QMainWindow,\
                          QMenu, QMenuBar, QToolBar
 from PyQt5.QtCore import Qt
 from functools import partial
-from src.view.selection import SelectionView
 
+from src.view.selection_view import SelectionView
 import qrc.qrc_resources as res
 from src.view.entry_view import EntryView
-from src.storage.crud import Crud
 from src.model.transaction import AccountingEntry
-from src.view.dialogs.confirmation import Confirmation
+
 
 class MainWindow(QMainWindow):
     def __init__(self) -> None:
@@ -38,7 +36,7 @@ class MainWindow(QMainWindow):
         new_action: QAction = QAction(QIcon(':entry'), 'new', self)
         new_action.setShortcut(QKeySequence.New)
         new_action.triggered.\
-                connect(partial(self._setup_entry_widget, AccountingEntry()))
+            connect(partial(self._setup_entry_widget, AccountingEntry()))
         toolbar.addAction(new_action)
         self.entry_menu.addAction(new_action)
 
@@ -68,7 +66,7 @@ class MainWindow(QMainWindow):
             border-color: navy;
             font-size: 14px;
             font-weight: 900;
-            qcheckbox: {
+            checkbox: {
                 border-width: 3px
             }
         ''')
